@@ -1,0 +1,50 @@
+get_fst(xs: String): String
+    case xs {
+        nil: String.nil
+         cons: if (Char.eql(xs.head, ' ')) then 
+                String.nil 
+            else 
+                String.cons(xs.head, get_fst(xs.tail))
+     }
+
+get_op(xs: String): String
+    case xs {
+        nil: String.nil
+        cons: if (Char.eql(xs.head, ' ')) then 
+        case xs.tail {
+            nil: String.nil
+            cons: Char.to_string(xs.tail.head)
+        } else get_op(xs.tail)
+    }
+
+get_second(a: Nat, xs: String): String
+    case xs {
+        nil: String.nil
+        cons: case a {
+                zero: xs
+                succ: if (Char.eql(xs.head, ' ')) then get_second(a.pred, xs.tail) else get_second(a, xs.tail)
+             }
+    }
+    
+get_result(first: Nat, op: String, second: Nat): Nat
+    switch String.eql(op) {
+        "+": first + second
+        "-": first - second
+        "/": first / second
+        "*": first * second
+        "^": Nat.pow(first, second)
+    } default 0
+
+MinhaCalculadora: IO<Unit>
+    IO { 
+      get expression = IO.prompt("Escreva aqui sua expressão: ")
+
+      let get_snd = get_second(2)
+
+      let first_num = Nat.read(get_fst(expression))
+      let op = get_op(expression) 
+      let second_num = Nat.read(get_snd(expression))
+      let result = get_result(first_num, op, second_num)
+
+      IO.print(Nat.show(result))
+     }

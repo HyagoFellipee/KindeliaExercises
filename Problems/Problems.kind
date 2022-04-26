@@ -1,0 +1,174 @@
+//Inverses the order of the elements of a pair
+inversePair<A: Type, B: Type>(pair: Pair<A,B>): Pair<B,A>
+    open pair 
+    {pair.snd, pair.fst}
+
+//Applies a function to both elements of a Pair
+PairMap<A: Type, B: Type>(fn: A -> B, pair: Pair<A,A>): Pair<B,B>
+  open pair 
+  {fn(pair.fst), fn(pair.snd)}
+
+//Returns the length of a list
+listLength<A: Type>(xs: List<A>): Nat
+  case xs {
+      nil: 0
+      cons: Nat.succ(listLength!(xs.tail))
+
+  }
+
+
+//Returns pairs of the elements of the 2 input lists on the same index
+//x: Problems.p20!!([1,2], ["a","b"]) == [{1,"a"},{2,"b"}]
+PairList<A: Type, B: Type>(xs: List<A>, ys: List<B>): List<Pair<A,B>>
+  case xs{
+
+      nil: []
+      cons: case ys {
+          nil: []
+          cons: List.cons!({xs.head, ys.head}, PairList!!(xs.tail, ys.tail))
+      }
+
+  }
+
+// Problems:_ 
+//     List.show!(Pair.show!!, PairList!!([1,2,3], ["a","b","c"]))
+
+
+//Returns the smallest element of a List
+smallestEl(xs: List<Nat>): Nat
+    case xs {
+        nil: 0
+        cons: case xs.tail {
+            nil: xs.head
+            cons: smallestEl(List.cons!(Nat.min(xs.head, xs.tail.head), xs.tail.tail))
+         }
+     }
+
+
+
+//Returns the same list without the smallest element
+withoutSmallest(xs: List<Nat>): List<Nat>
+    case xs {
+        nil: []
+        cons: case Nat.eql(xs.head, smallestEl(xs)) {
+            true: xs.tail
+            false: List.cons!(xs.head, withoutSmallest(xs.tail))
+         }
+     }
+
+//Returns the bisggest number in a List
+biggestEl(xs: List<Nat>): Nat
+    case xs {
+        nil: 0
+        cons: case xs.tail {
+            nil: xs.head
+            cons: biggestEl(List.cons!(Nat.max(xs.head, xs.tail.head), xs.tail.tail))
+         }
+     }
+    
+//Returns the same list without the biggest element 
+withoutBiggest(xs: List<Nat>): List<Nat>
+    case xs {
+        nil: []
+        cons: case Nat.eql(xs.head, biggestEl(xs)) {
+            true: xs.tail
+            false: List.cons!(xs.head, withoutBiggest(xs.tail))
+         }
+     }
+
+
+//Returns if a number is in a List or not
+isInList(xs: List<Nat>, a: Nat): Bool
+    case xs {
+        nil: false
+        cons: case Nat.eql(xs.head, a) {
+            true: true
+            false: isInList(xs.tail, a)
+         }
+     }
+
+//Return a List without element (only pops the first occurrence)
+listPop(xs: List<Nat>, a: Nat): List<Nat>
+    case xs {
+        nil: []
+        cons: case Nat.eql(a, xs.head){
+            true: xs.tail
+            false: List.cons!(xs.head, listPop(xs.tail, a))
+        }
+
+    }
+
+//Return a List without all occurrences of a element 
+listPopAll(xs: List<Nat>, a: Nat): List<Nat>
+    case xs {
+        nil: []
+        cons: case Nat.eql(a, xs.head){
+            true: listPopAll(xs.tail, a)
+            false: List.cons!(xs.head, listPopAll(xs.tail, a))
+        }
+
+    }
+
+//Returns the same list, in ascending order
+listAscend(xs: List<Nat>): List<Nat>
+    case xs {
+        nil: []
+        cons: List.cons!(smallestEl(xs), listAscend(withoutSmallest(xs)))
+    }
+
+//Returns the same list, in descending order
+listDescend(xs: List<Nat>): List<Nat>
+    case xs {
+        nil: []
+        cons: List.cons!(biggestEl(xs), listDescend(withoutBiggest(xs)))
+    }
+
+//Returns the same list in ascending order without duplicate numbers
+listSort(xs: List<Nat>): List<Nat>
+    case xs {
+        nil: []
+        cons: List.cons!(smallestEl(xs), listSort(listPopAll(xs, smallestEl(xs))))
+    }
+
+//Returns the same List without a element at a certain index
+listPopAt<A: Type>(xs: List<A>, a: Nat): Maybe<List<A>>
+    case xs {
+        nil: Maybe.none!
+        cons: case a{
+            zero: Maybe.some!(xs.tail)
+            succ: case listPopAt!(xs.tail, a.pred) as lista{
+                none: Maybe.none!
+                some: Maybe.some!(List.cons!(xs.head, lista.value))
+                
+            } 
+        }
+    }
+
+
+//Returns the element that is at a certain index
+ListAt<A: Type>(xs: List<A>, a: Nat): Maybe<A> 
+    case xs {
+        nil: Maybe.none!
+        cons: case a {
+            zero: Maybe.some!(xs.head)
+            succ: ListAt!(xs.tail, a.pred)
+        }
+    }
+
+
+
+//Returns the same list applying a filter (using a comparison function)
+ListFilter<A: Type>(xs: List<A>, f: A -> Bool): List<A>
+    case xs {
+        nil: List.nil!
+        cons: case f(xs.head) {
+            true: List.cons!(xs.head, ListFilter!(xs.tail, f))
+            false: ListFilter!(xs.tail, f)
+        }
+    }
+
+
+
+
+
+

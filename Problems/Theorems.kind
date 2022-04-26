@@ -1,0 +1,166 @@
+and_true_b(b: Bool): Bool.and(true, b) == b
+  refl
+
+and_b_true(b: Bool): Bool.and(b, true) == b
+  case b {
+      true: refl
+      false: refl
+  }!
+
+right_and_b_true(b: Bool): b == Bool.and(b, true)
+  case b {
+        true: ?a-
+        false: ?b-
+  }
+
+and_false_b(b: Bool): Bool.and(false, b) == false
+   refl
+
+
+and_b_false(b: Bool): Bool.and(b, false) == false
+    case b{
+        true: refl
+        false: refl
+    }!
+
+or_true_b(b: Bool): Bool.or(true, b) == true
+  refl
+
+or_b_true(b: Bool): Bool.or(b, true) == true
+  case b {
+        true: refl
+        false: refl
+  }! 
+
+or_false_b(b: Bool): Bool.or(false, b) == b
+  refl
+
+or_b_false(b: Bool): Bool.or(b, false) == b
+  case b {
+      true: refl
+      false: refl
+  }!
+
+
+eql_b_b(b: Bool): Bool.eql(b, b) == true
+  case b {
+    true: refl
+    false: refl
+  }!
+
+demorgan_0(a: Bool, b: Bool): Bool.not(Bool.and(a,b)) == Bool.or(Bool.not(a),Bool.not(b))
+  case a {
+      true: refl
+      false: refl
+  }!
+
+demorgan_1(a: Bool, b: Bool): Bool.not(Bool.or(a,b)) == Bool.and(Bool.not(a),Bool.not(b))
+  case a {
+      true: refl
+      false: refl
+  }!
+
+half_double_theorem(n: Nat): Nat.half(Nat.double(n)) == n
+  case n {
+      zero: refl
+      succ: 
+      let ind = half_double_theorem(n.pred)
+      let app = apply(Nat.succ, ind)
+      app
+  }!
+
+lte_0_n(n: Nat): Nat.lte(0, n) == true
+  refl
+
+gte_n_0(n: Nat): Nat.gte(n, 0) == true
+  refl
+   
+
+eql_n_n(n: Nat): Nat.eql(n, n) == true
+  case n {
+      zero: refl
+      succ: eql_n_n(n.pred)
+  }!
+
+double_negation(b: Bool): Bool.not(Bool.not(b)) == b
+  case b {
+    true: refl
+    false: refl
+  }!
+
+is_even_double_n(n: Nat): Nat.is_even(Nat.double(n)) == true
+  case n {
+      zero: refl
+      succ: 
+      let ind = is_even_double_n(n.pred)
+      let app = apply(Bool.not, ind)
+      let app2 = apply(Bool.not, app)
+      app2
+  }!
+
+gte_succ_n_0(n: Nat): Nat.gte(Nat.succ(n), 0) == true
+  case n {
+      zero: refl
+      succ: refl
+  }!
+
+gte_succ_n_n(n: Nat): Nat.gte(Nat.succ(n), n) == true
+  case n {
+    zero: refl
+    succ: gte_succ_n_n(n.pred)
+  }!
+
+or_true_a_neq_false(a: Bool): Bool.or(true, a) != false
+  (e) Bool.true_neq_false(e)
+
+or_a_true_neq_false(a: Bool): Bool.or(a, true) != false
+  (e)
+  case a 
+  with e: Bool.or(a, true) == false {
+    true: Bool.true_neq_false(e)
+    false: Bool.true_neq_false(e)
+  }!
+
+and_false_a_neq_true(a: Bool): Bool.and(false, a) != true
+  (e) Bool.false_neq_true(e)
+
+and_a_false_neq_true(a: Bool): Bool.and(a, false) != true
+  (e)
+  case a 
+  with e: Bool.and(a, false) == true{
+    true: Bool.false_neq_true(e)
+    false: Bool.false_neq_true(e)
+  }!
+
+add_succ_n_m(n: Nat, m: Nat): Nat.add(Nat.succ(n), m) == Nat.succ(Nat.add(n, m))
+  refl
+
+add_n_succ_m(n: Nat, m: Nat): Nat.add(n, Nat.succ(m)) == Nat.succ(Nat.add(n, m))
+  case n {
+    zero: refl
+    succ: let ind = add_n_succ_m(n.pred, m)
+    let app = apply(Nat.succ, ind)
+    app
+  }!
+
+add_0_n(n: Nat): (0 + n) == n
+  refl
+
+add_n_0(n: Nat): (n + 0) == n
+  case n {
+		zero: refl 
+		succ: 
+			let ind = add_n_0(n.pred)
+			apply(Nat.succ, ind)
+	}!
+
+add_a_b(a: Nat, b: Nat): (a + b) == (b + a)
+  case a {
+    zero: mirror(add_n_0(b))
+		succ: 
+			let aux = add_n_succ_m(b, a.pred)
+			let m_aux = mirror(aux)
+			let ind = add_a_b(a.pred, b)
+			let a_ind = apply(Nat.succ, ind)
+			Equal.chain!!!!(a_ind, m_aux)
+  }!
