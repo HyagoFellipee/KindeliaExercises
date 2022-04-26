@@ -1,0 +1,14 @@
+
+Expo(a: Nat, b: Nat): Nat
+    case b {
+        zero: Nat.succ(0)
+        succ: case a {
+            zero: 0
+            succ: Nat.mul(a, Expo(a, b.pred))
+        }
+    }
+
+
+
+Exp:_ 
+    Expo(2, 3)

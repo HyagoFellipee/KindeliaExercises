@@ -1,0 +1,21 @@
+Nat.add(a: Nat, b: Nat): Nat
+  case a { 
+     zero: b
+     succ: Nat.add(a.pred, Nat.succ(b))
+  }
+
+Mul(a: Nat, b: Nat): Nat
+    case a {
+        zero: 0
+        succ: case b {
+            zero: 0
+            succ: Nat.add(Mul(a.pred, b), b)
+        }
+    }
+
+
+
+
+
+mul:_
+   mult(7, 3)

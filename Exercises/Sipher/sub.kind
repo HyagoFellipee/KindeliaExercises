@@ -1,0 +1,13 @@
+subs(a: Nat, b: Nat): Nat
+    case a b {
+        zero zero: 0
+        zero succ: 0
+        succ zero: a 
+        succ succ: subs(a.pred, b.pred)
+        
+    }
+
+    
+
+sub:_ 
+    subs(3, 2)

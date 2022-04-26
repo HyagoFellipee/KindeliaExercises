@@ -1,0 +1,20 @@
+dobrar(a: Nat): Nat
+    case a {
+        zero: 0
+        succ: Nat.succ(Nat.succ(dobrar(a.pred)))
+    }
+    
+metade(a: Nat): Nat
+    case a {
+        zero: Nat.zero
+        succ: case a.pred{
+            zero: Nat.zero
+            succ: Nat.succ(metade(a.pred.pred))
+
+
+        }
+
+    }
+
+dobro:_
+    metade(dobrar(4))

@@ -1,0 +1,20 @@
+addok(str: String): String
+    case str {
+
+        nil: " okay"
+        cons: String.cons(str.head, addok(str.tail))
+
+    }
+
+okaylista(f: String -> String, xs: List<String>): List<String>
+    case xs{
+
+        nil: []
+        cons: List.cons!(f(xs.head), okaylista(f, xs.tail))
+
+    }
+
+oklist:_
+
+    okaylista(addok, ["oi", "amor", "dor e solidão"])
+    

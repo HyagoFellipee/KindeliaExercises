@@ -1,0 +1,8 @@
+Nat.add(a: Nat, b: Nat): Nat
+  case a { 
+     zero: b
+     succ: Nat.add(a.pred, Nat.succ(b))
+  }
+
+soma:_
+  Nat.add(10, 9)

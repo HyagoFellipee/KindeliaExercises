@@ -1,0 +1,14 @@
+ltns(a: Nat, b: Nat): Bool
+    case a{
+        zero: case b{
+            zero: false
+            succ: true
+        }
+        succ: case b {
+            zero: false
+            succ: ltns(a.pred, b.pred)
+        }
+    }
+
+ltn:_ 
+    ltns(0, 0)

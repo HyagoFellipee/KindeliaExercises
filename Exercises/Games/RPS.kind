@@ -1,0 +1,71 @@
+// Create a type Object, that can be rock paper or scissors
+type Object {
+  rock,
+  paper,
+  scissors
+}
+
+type Result {
+    win,
+    draw,
+    lose
+}
+
+Object.read(code: String): Object
+  switch String.eql(code) {
+    "pedra": Object.rock
+    "papel": Object.paper
+    "tesoura": Object.scissors
+} default Object.rock
+
+Object.from_nat(n: Nat): Object
+  switch Nat.eql(n) {
+      0: Object.rock
+      1: Object.paper
+      2: Object.scissors
+  }default Object.rock
+
+// Object a wins vs Object b? Draw = lose
+Object.wins(a: Object, b: Object): Result
+  case a b {
+      rock rock: Result.draw
+      rock scissors: Result.win
+      paper rock: Result.win
+      paper paper: Result.draw
+      scissors paper: Result.win
+      scissors scissors: Result.draw
+  }default Result.lose 
+
+
+Object.match_result(res: Result): String
+  case res {
+      win: "Você ganhou"
+      draw: "Você empatou"
+      lose: "Você perdeu"
+  }
+
+RPS: IO(Unit)
+  IO {
+    IO.print("Escolha um objeto: pedra, papel ou tesoura? \n oi porra")
+    // Pedir input do usuário e salvar na variável line
+    get line = IO.get_line
+
+    // Converter o input line (String) no tipo Object
+    let user_object = Object.read(line)
+
+    // number = Random -> 0, 1, 2
+    get number = IO.random(3)
+
+    // Converter o number (Nat) no tipo Object
+    let cpu_object = Object.from_nat(number)
+
+    // Comparar user_object e cpu_object e retornar true se o usuário ganhou
+    let user_won = Object.wins(user_object, cpu_object)
+    
+    // Mensagem a ser dita pelo programa: "Você ganhou" ou "Você perdeu"
+    let final_message = Object.match_result(user_won)
+
+    IO.print(final_message)
+
+    RPS
+  }

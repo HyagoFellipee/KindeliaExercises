@@ -1,0 +1,11 @@
+gtns(a: Nat, b: Nat): Bool
+    case a{
+        zero: false
+        succ: case b {
+            zero: true
+            succ: gtns(a.pred, b.pred)
+        }
+    }
+
+gtn:_ 
+    gtns(3, 2)

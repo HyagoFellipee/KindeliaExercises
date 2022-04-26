@@ -1,0 +1,19 @@
+// type List <A: Type> {
+//   nil,
+//   cons(head: A, tail: List<A>),
+// }
+
+// type Maybe<A: Type> {
+//     none
+//     some(value: A)
+// }
+
+
+ListaSemOPrimeiro(xs: List<Nat>): Maybe<List<Nat>>
+    case xs {
+        nil: Maybe.none!
+        cons: Maybe.some!(xs.tail)
+    }
+
+NoHead:_ 
+    Maybe.show!(Nat.show!(ListaSemOPrimeiro([])))

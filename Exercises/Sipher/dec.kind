@@ -1,0 +1,9 @@
+decremento(a: Nat): Nat
+    case a{
+        zero: 0
+        succ: a.pred
+
+    }
+    
+dec:_
+    decremento(10)

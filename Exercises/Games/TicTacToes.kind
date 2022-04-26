@@ -1,0 +1,204 @@
+type TicTacToe.Piece {
+  O
+  X
+}
+
+
+type TicTacToe {
+  new(
+    turn: Nat
+    board: List<List<Maybe<TicTacToe.Piece>>>
+  )
+}
+
+TicTacToe.Piece.eql(a: Maybe<TicTacToe.Piece>, b: Maybe<TicTacToe.Piece>): Bool
+	case a b {
+		 some some: case a.value b.value {
+			 O O: true
+			 X X: true
+		 }default false 
+	}default false 
+
+// Example of a finished game
+// TicTacToe.new(
+//   7,
+//   [ 
+//     [some(TicTacToe.Piece.X), some(TicTacToe.Piece.X), some(TicTacToe.Piece.O)],
+//     [none                   , some(TicTacToe.Piece.X), some(TicTacToe.Piece.O)],
+//     [none                   , some(TicTacToe.Piece.O), some(TicTacToe.Piece.X)]
+//   ]
+// )
+
+// The initial board state
+// An empty board
+TicTacToe.init: TicTacToe
+  TicTacToe.new(
+		0,
+		[
+			[none, none, none]
+			[none, none, none]
+			[none, none, none]
+		]
+	)
+
+// Who is the next one to play?
+TicTacToe.next_piece(game: TicTacToe): TicTacToe.Piece
+  open game
+	if Nat.is_even(game.turn) then TicTacToe.Piece.X else TicTacToe.Piece.O
+
+// From an input, adds X or (decided from TicTacToe.next_piece) at given location and increments the turn
+// if the input is invalid, returns none
+// x = row
+// y = column
+// Example of possible inputs: 
+// "1 0"
+// "0 0"
+// "2 2"
+TicTacToe.is_empty(input: String, game: TicTacToe): Bool
+	open game 
+	let x = Char.dec_value(String.at(0, input) <> ''')
+	let y = Char.dec_value(String.at(2, input) <> ''')
+	case TicTacToe.get(x, y, game) {
+	  none: true
+	  some: false 
+	}
+
+TicTacToe.is_move_valid(input: String): Bool 
+	((String.length(input) =? 3) &&
+		Char.eql(String.at(1, input) <> ''', ' ') &&
+		Char.is_digit(String.at(0, input) <> ' ') &&
+		Char.is_digit(String.at(2, input) <> ' ') &&
+		(Char.dec_value(String.at(0, input) <> ' ') <? 3) &&
+		(Char.dec_value(String.at(0, input) <> ' ') >=? 0) &&
+		(Char.dec_value(String.at(2, input) <> ' ') <? 3) &&
+		(Char.dec_value(String.at(2, input) <> ' ') >=? 0) 
+	)
+	
+TicTacToe.moved(game: TicTacToe, x: Nat, y: Nat): TicTacToe
+	open game 
+	TicTacToe.new(
+		game.turn + 1,
+		let new_board = List.set!(x, List.set!(y, some(TicTacToe.next_piece(game)), List.at!(x, game.board) <> []), game.board)
+		new_board
+	)
+
+TicTacToe.move(input: String, game: TicTacToe): Maybe<TicTacToe>
+  if (TicTacToe.is_move_valid(input) && TicTacToe.is_empty(input, game))
+	then Maybe.some!(TicTacToe.moved(game, Char.dec_value(String.at(0, input) <> '''), Char.dec_value(String.at(2, input) <> ''')))
+	else none
+
+// Gets the state of a given position in the board
+TicTacToe.get(x: Nat, y: Nat, game: TicTacToe): Maybe<TicTacToe.Piece>
+  open game
+  List.at!(y, List.at!(x, game.board) <> []) <> none
+
+// Determines a winner if there is one
+TicTacToe.win_horizontal(game: TicTacToe, a: Nat): Bool 
+	open game 
+	if (a =? 3)
+	then false 
+	else if (TicTacToe.Piece.eql(TicTacToe.get(a, 1, game), TicTacToe.get(a, 0, game)) && 
+			 TicTacToe.Piece.eql(TicTacToe.get(a, 1, game), TicTacToe.get(a, 2, game))) 
+	 		 then true 
+			 else TicTacToe.win_horizontal(game, Nat.succ(a))	
+
+TicTacToe.win_vertical(game: TicTacToe, a: Nat): Bool 
+	open game 
+	if (a =? 3)
+	then false 
+	else if (TicTacToe.Piece.eql(TicTacToe.get(1, a, game), TicTacToe.get(0, a, game)) && 
+			 TicTacToe.Piece.eql(TicTacToe.get(1, a, game), TicTacToe.get(2, a, game))) 
+	 		 then true 
+			 else TicTacToe.win_vertical(game, Nat.succ(a))	
+
+TicTacToe.win_diagonal(game: TicTacToe): Bool 
+	open game 
+    if (TicTacToe.Piece.eql(TicTacToe.get(1, 1, game), TicTacToe.get(0, 0, game)) && 
+	  TicTacToe.Piece.eql(TicTacToe.get(1, 1, game) , TicTacToe.get(2, 2, game))) 
+	 		 then true 
+			 else (TicTacToe.Piece.eql(TicTacToe.get(1, 1, game), TicTacToe.get(0, 2, game)) && 
+				   TicTacToe.Piece.eql(TicTacToe.get(1, 1, game), TicTacToe.get(2, 0, game)))
+	
+	 
+TicTacToe.winner(game: TicTacToe): Maybe<TicTacToe.Piece>
+	open game
+  if (TicTacToe.win_diagonal(game) || TicTacToe.win_horizontal(game, 0) || TicTacToe.win_vertical(game, 0))
+	then case TicTacToe.next_piece(game) as piece {
+		O: some(TicTacToe.Piece.X)
+		X: some(TicTacToe.Piece.O)
+	}
+	else none
+
+TicTacToe.to_string(piece: TicTacToe.Piece): String
+	case piece {
+		X: "X"
+		O: "O"
+	}
+
+TicTacToe.to_print_piece(piece: Maybe<TicTacToe.Piece>): String
+	case piece {
+		none: " "
+		some: TicTacToe.to_string(piece.value)
+	}
+
+TicTacToe.get_layer_text(xs: List<Maybe<TicTacToe.Piece>>): String
+	let text = (TicTacToe.to_print_piece(List.at!(0, xs) <> none) | " | " |
+						 	TicTacToe.to_print_piece(List.at!(1, xs) <> none) | " | " |
+							TicTacToe.to_print_piece(List.at!(2, xs) <> none))
+	text
+
+TicTacToe.show(game: TicTacToe): String
+  open game
+	let div = "\n---------\n"
+	let text = (TicTacToe.get_layer_text(List.at!(0, game.board) <> []) |  div |
+							TicTacToe.get_layer_text(List.at!(1, game.board) <> []) | div |
+							TicTacToe.get_layer_text(List.at!(2, game.board) <> []))
+	text 
+
+TicTacToes: IO<Unit>
+  IO {
+    // Prints the initial board
+    let ttt = TicTacToe.init
+    IO.print(TicTacToe.show(ttt))
+    TicTacToe.play(ttt)
+  }
+
+TicTacToe.play(game: TicTacToe): IO<Unit>
+  IO {
+    IO.print("Qual lacuna deseja preencher?")
+    // Receives user input
+    get line = IO.get_line
+    
+    // If the movement is possible, returns the new game
+    let move = TicTacToe.move(line, game)
+
+    // If the movement is possible
+    get game = case move {
+      none: IO {
+				IO.print("Movimento inválido")
+        return game
+      }
+      some: IO {
+        return move.value
+      }
+    }
+
+    // Prints the result
+    IO.print(TicTacToe.show(game))
+
+    // Checks who is the winner
+    let Winner = TicTacToe.winner(game)
+    open game
+
+    // If there is no winner, checks if its a draw
+    case Winner { 
+      none: 
+        if Nat.eql(game.turn, 9) then
+          IO.print("Empatou")
+        else TicTacToe.play(game)
+      some: case Winner.value { 
+        X: IO.print("X Venceu!")
+        O: IO.print("O Venceu!")
+      }
+    }
+  }

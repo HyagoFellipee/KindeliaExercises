@@ -1,0 +1,12 @@
+met(a: Nat): Nat
+    case a {
+        zero: Nat.zero
+        succ: case a.pred{
+            zero: Nat.zero
+            succ: Nat.succ(met(a.pred.pred))
+             }
+    }
+
+
+metade:_ 
+    met(2) 

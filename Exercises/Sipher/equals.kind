@@ -1,0 +1,23 @@
+subs(a: Nat, b: Nat): Nat
+    case a {
+        zero: 0
+        succ: case b {
+            zero: a
+            succ: subs(a.pred, b.pred)
+        }
+    }
+
+equalss(a: Nat, b: Nat): Bool
+    case a{
+        zero: case b {
+            zero: true
+            succ: false
+        }
+        succ: case b {
+            zero: false
+            succ: equalss(a.pred, b.pred)
+        }
+    }
+
+equals:_ 
+    equalss(0, 1)

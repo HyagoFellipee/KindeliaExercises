@@ -1,0 +1,9 @@
+invert(a: List<Nat> b: List<Nat>): List<Nat>
+case a {
+  nil : b
+  cons: invert(a.tail, List.cons!(a.head, b))
+ }
+
+Invert([2, 3], List.cons!(1, [])) -> Invert([3], List.cons!([2], [1]))
+Reverse:_ 
+   List.show!(Nat.show, invert([1, 2, 3], []))

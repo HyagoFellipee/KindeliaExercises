@@ -1,0 +1,4 @@
+case a {
+  zero: retorno_caso_zero
+  succ: retorno_caso_succ
+}

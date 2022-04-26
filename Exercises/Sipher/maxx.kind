@@ -1,0 +1,12 @@
+Nat.maxx(a: Nat, b: Nat): Nat
+    case a {
+        zero: b 
+        succ: case b {
+            zero: a 
+            succ: Nat.succ(Nat.max(a.pred, b.pred))
+        }
+
+    }
+
+maxx:_
+    Nat.maxx(10000000000000, 10000000000)

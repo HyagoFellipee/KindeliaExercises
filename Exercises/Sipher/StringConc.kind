@@ -1,0 +1,10 @@
+strCon(str1: String, str2: String): String
+    case str1 {
+
+        nil: str2
+        cons: String.cons(str1.head, strCon(str1.tail, str2))
+
+    }
+
+StringConc:_ 
+    strCon("Hyago ", "Lindo")

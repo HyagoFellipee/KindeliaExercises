@@ -1,0 +1,42 @@
+upclock(cube: Cube): Cube
+  open cube 
+
+
+clock(side: CubeSide): CubeSide
+  open side
+  let temp_side = side 
+  List.set!()
+CubeRub:_ 
+
+let full_white_layer = [Color.white, Color.white, Color.white]                          
+let full_yellow_layer  = [Color.yellow, Color.yellow, Color.yellow]                                 
+let full_red_layer  = [Color.red, Color.red, Color.red]
+let full_orange_layer  = [Color.orange, Color.orange, Color.orange]                                           
+let full_blue_layer  = [Color.blue, Color.blue, Color.blue]                                                
+let full_green_layer  = [Color.green, Color.green, Color.green]
+                                                     
+let down_side = CubeSide.new(full_white_layer, full_white_layer, full_white_layer)
+let up_side = CubeSide.new(full_yellow_layer, full_yellow_layer, full_yellow_layer)
+let left_side = CubeSide.new(full_blue_layer, full_blue_layer, full_blue_layer)
+let right_side = CubeSide.new(full_green_layer, full_green_layer, full_green_layer)
+let back_side = CubeSide.new(full_orange_layer, full_orange_layer, full_orange_layer)
+let front_side = CubeSide.new(full_red_layer, full_red_layer, full_red_layer)  
+
+let cube = Cube.new(front_side, down_side, left_side, right_side, up_side, down_side)
+
+
+
+IO.print("calvície não é piada")
+
+
+
+
+// type Cube_Piece {
+//     center(color: Color)
+//     edge(fst_color: Color, snd_color: Color),
+//     corner(fst_color: Color, snd_color: Color, trd_color: Color),
+// }
+
+
+
+

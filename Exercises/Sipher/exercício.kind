@@ -1,0 +1,22 @@
+//A funcao deve somar 1 a todos os elementos da lista e voltar eles modificados
+//+1 [1,2,3,4] => [2,3,4,5]
+//Use a função Nat.add
+//Vocês devem Manualmente preencher os tipos e tirá-los da função (por agora)
+//Exemplo:
+//somalista<Nat, B: Type>(f: Nat -> B, xs: List<Nat>): List<B> 
+//somalist<B: Type>(f: Nat -> B, xs: List<Nat>): List<B> (proximo passo?)
+//sabendo disso façam as seguintes funções
+
+
+somalista<A: Type, B: Type>(f: A -> B, xs: List<A>): List<B>
+?a
+
+//a função deve colocar um " okay" depois de todos os elementos
+//["tudo", "lista", "feito"] => ["tudo ok", "lista ok", "feito ok"]
+okaylista<A: Type, B: Type>(f: A -> B, xs: List<A>): List<B>
+?b
+
+//a função deve inverter todos os valores da lista
+//[[1,2,3], [4,5,6]] => [[3,2,1], [6,5,4]]
+revertelista<A: Type, B: Type>(f: A -> B, xs: List<A>): List<B>
+?c
